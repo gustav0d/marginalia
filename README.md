@@ -2,7 +2,7 @@
 
 A study companion that answers questions from your own uploaded files — with citations pointing back to the exact page — explains concepts at a chosen level, and generates quizzes. If your files don't support an answer, it says so instead of guessing.
 
-**Status:** slice 1 in progress — see [Roadmap](#roadmap).
+**Status:** slice 1 in progress — see [ROADMAP.md](ROADMAP.md).
 
 ## Why
 
@@ -22,14 +22,7 @@ A RAG study companion is the most common portfolio project there is, so the RAG 
 
 ## Roadmap
 
-Six slices, in order. Each ships on its own and the project is stoppable at any slice.
-
-1. **Ask a question, get a cited answer.** Upload a PDF, ingest it (parse, chunk, embed), ask, get an answer with page citations. Deployed from the start.
-2. **Measure retrieval.** Golden dataset of 50+ questions; recall@k and MRR; hybrid search vs. baseline.
-3. **Judge and CI gate.** Faithfulness, relevance and citation-correctness rubrics; judge calibrated against ~50 hand labels; a PR that lowers scores fails CI.
-4. **Tracing.** OpenTelemetry + Langfuse; one trace ID follows a question from browser to model call.
-5. **Guardrails and red team.** Prompt-injection PDFs, PII redaction, weak-evidence refusals; red-team results in CI.
-6. **Quizzes and explanation modes.** Quiz generation as Zod-validated structured output; explanation levels from versioned prompt templates.
+The full plan lives in [ROADMAP.md](ROADMAP.md), as two tracks. **Track A** is the application: retrieval, evaluation, tracing, guardrails. **Track B** adds trained models — a fine-tuned retriever behind the embedder port, its serving and ops — but starts only once the evaluation harness exists, so every model is measured against the API baseline instead of claimed. Slices ship on their own and the project is stoppable at any slice.
 
 ## Repo layout
 
@@ -41,6 +34,3 @@ redteam/      Python: injection PDFs and attack cases
 docs/adr/     one short decision record per choice
 ```
 
-## Honest scope
-
-This project covers the software-engineering-for-AI side of AI engineering — retrieval quality, evaluation, tracing and guardrails. It does **not** cover LLM training or operationalization: a rushed model with weak results hurts more than no model, so embeddings sit behind an interface where a trained model can drop in later.
