@@ -1,26 +1,15 @@
 # Marginalia — Roadmap
 
-The full project plan: two tracks, built as thin vertical slices. Current stack
-overview lives in the [README](README.md).
+The full project plan, built as thin vertical slices: each ships on its own and the
+project is stoppable at any slice.
 
-- **Track A — AI product engineering.** The application: retrieval, evaluation,
-  tracing, guardrails. TypeScript in the runtime path, Python for the harnesses.
-- **Track B — Models.** Training and operationalizing: a fine-tuned retriever, a
-  serving service, and the ops around them. Python earns its place in the runtime
-  path here, not before.
-
-Track A is the spine. Track B starts only after Track A through slice 3, because the
-evaluation harness from slices 2–3 is also the yardstick for every Track B artifact.
-
----
-
-## Track A — AI product engineering
+## Slices
 
 ### 1. Ask a question, get a cited answer
 - Upload a PDF → ingest (parse, chunk, embed) → ask → answer with page-level citations.
 - The answer refuses when retrieved evidence is weak instead of guessing.
 - Embeddings from an API, always behind the `Embedder` port so a trained model can
-  drop in later (that is Track B's entry point).
+  drop in later.
 - Deployed from the start — a live link with real traces beats local polish.
 
 ### 2. Measure retrieval
@@ -53,22 +42,15 @@ evaluation harness from slices 2–3 is also the yardstick for every Track B art
 - Quiz and flashcard generation as structured output, validated with Zod.
 - Explanation levels (simple, exam-level, analogy) built from versioned prompt
   templates.
-- Everything above passes through the same eval harness: generated quizzes get judged
-  too.
+- Generated content passes through the same eval harness: quizzes get judged too.
 
-Throughout: ADRs (`docs/adr/`, one short file per decision), an eval results table,
-and honest documentation of what failed and what changed.
-
----
-
-## Track B — Models
-
-Each step consumes the Track A harness: the judge, the golden dataset and the metrics
-decide whether a trained model actually beats the API baseline.
+Slices 7–9 add trained models. They start only after the evaluation harness exists:
+every trained model must beat the off-the-shelf baseline in the same harness —
+measured, not claimed.
 
 ### 7. Fine-tuned retriever
 - Train an embedding model or cross-encoder reranker on question–passage pairs, with
-  synthetic questions generated and filtered by the Track A judge.
+  synthetic questions generated and filtered by the slice-3 judge.
 - Measured with recall@k and MRR against the off-the-shelf baseline — same harness,
   same dataset.
 - Published with a model card that includes where it fails.
@@ -93,11 +75,12 @@ decide whether a trained model actually beats the API baseline.
   a learner is about to forget; sized honestly (logistic regression / gradient
   boosting, not a transformer).
 
----
+Throughout: ADRs (`docs/adr/`, one short file per decision), an eval results table,
+and honest documentation of what failed and what changed.
 
-## Parking lot
+## Backlog
 
-Not scheduled, kept visible. Pulled in only after Track A is done.
+Not scheduled, kept visible. Pulled in only after the slices above are done.
 
 - **Study-planner agent** — exam date + syllabus file in, a study plan out; the user
   approves the plan before it commits. Cost and step budgets, loop limits, retries,
@@ -110,18 +93,8 @@ Not scheduled, kept visible. Pulled in only after Track A is done.
 - **Blog posts** — written from the eval and training results once real numbers
   exist; the results tables are the source material, the posts are not the deliverable.
 
-## Non-goals
+## Stopping points
 
-- No Kubernetes: Docker Compose and one cheap host.
-- No custom auth system: magic links or a hosted provider.
-- No competition entries, no research papers — thin artifacts hurt more than they help.
-- No claim of LLM training or operationalization experience until Track B artifacts
-  actually exist.
-- No framework in the runtime path that hides a component I can't explain node by
-  node; if a graph node can't be explained, the framework goes for that part.
-
-## Order and stopping points
-
-Build in track order; stop when time runs out. The eval harness (slice 2) is the
-cheapest early win outside the app itself: it makes every later decision — hybrid
-search, prompts, trained models — measurable instead of vibes.
+Build in order; stop when time runs out. The eval harness (slice 2) is the cheapest
+early win outside the app itself: it makes every later decision — hybrid search,
+prompts, trained models — measurable instead of vibes.
