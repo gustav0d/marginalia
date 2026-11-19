@@ -1,0 +1,16 @@
+# local notes / scratch — private, never commit
+scratchpad/
+
+# env & secrets
+.env
+.env.*
+
+# dependencies & builds
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
